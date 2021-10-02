@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:provider/provider.dart';
-import 'package:song_lyrics/models/song_track_model.dart';
 import 'package:song_lyrics/provider/lyrics_provider.dart';
 import 'package:song_lyrics/screens/song_details_screen.dart';
 
@@ -19,8 +18,6 @@ class _LyricsTrackListScreenState extends State<LyricsTrackListScreen> {
   var _isEmpty = false;
   @override
   void didChangeDependencies() async {
-    // TODO: implement didChangeDependencies
-
     if (_isInit) {
       setState(() {
         _isLoading = true;
@@ -56,6 +53,8 @@ class _LyricsTrackListScreenState extends State<LyricsTrackListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Center(child: Text("Trending")),
+        backgroundColor: Theme.of(context).primaryColor,
+        foregroundColor: Colors.black,
       ),
       body: _isLoading
           ? const Center(
@@ -84,6 +83,7 @@ class _LyricsTrackListScreenState extends State<LyricsTrackListScreen> {
                           const Icon(
                             Icons.library_music,
                             size: 25,
+                            color: Colors.red,
                           ),
                           const SizedBox(width: 19),
                           Container(

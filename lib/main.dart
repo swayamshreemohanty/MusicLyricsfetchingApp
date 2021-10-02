@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:song_lyrics/provider/lyrics_provider.dart';
 import 'package:song_lyrics/screens/lyrics_track_list_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:song_lyrics/screens/song_details_screen.dart';
 
 void main() {
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarIconBrightness: Brightness.dark,
+      statusBarBrightness: Brightness.light,
+      statusBarColor: Colors.transparent,
+    ),
+  );
   runApp(const MyApp());
 }
 
@@ -19,7 +27,8 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          primarySwatch: Colors.amber,
+          brightness: Brightness.light,
         ),
         home: const LyricsTrackListScreen(),
         routes: {
