@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:song_lyrics/models/song_track_model.dart';
@@ -13,24 +14,25 @@ class SongDetailsScreen extends StatefulWidget {
 class _SongDetailsScreenState extends State<SongDetailsScreen> {
   var _isInit = true;
   var _isLoading = false;
-  var _lyrics;
+  dynamic _lyrics;
+  dynamic trackId;
+  SongTrackModel? songDetails;
 
   @override
   void didChangeDependencies() async {
-    final trackId =
-        ModalRoute.of(context)!.settings.arguments as SongTrackModel;
-    SongTrackModel songData = trackId;
+    trackId = ModalRoute.of(context)!.settings.arguments as SongTrackModel;
+    songDetails = trackId;
 
-    print("songData");
+    // print("songData");
 
-    print(songData.albumName);
+    // print(songData.albumName);
 
     if (_isInit) {
       setState(() {
         _isLoading = true;
       });
       await Provider.of<LyricsDataProvider>(context, listen: false)
-          .fetchAndSetSongsLyrics(songData.trackId)
+          .fetchAndSetSongsLyrics(songDetails!.trackId)
           .then((value) {
         // print("Rx Lyrics");
         // print(value);
@@ -48,7 +50,7 @@ class _SongDetailsScreenState extends State<SongDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(title: const Text("Track Details")),
       body: _isLoading
           ? const Center(
               child: CircularProgressIndicator(
@@ -58,11 +60,78 @@ class _SongDetailsScreenState extends State<SongDetailsScreen> {
           : SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
-                child: Column(children: [
-                  Text("${_lyrics['lyrics_body']}"),
-                  Divider(),
-                  Text("${_lyrics['lyrics_copyright']}"),
-                ]),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Artist",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 14),
+                      ),
+                      Text(
+                        songDetails!.artist!,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.normal, fontSize: 19),
+                      ),
+                      const SizedBox(height: 15),
+                      const Text(
+                        "Album Name",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 14),
+                      ),
+                      Text(
+                        songDetails!.albumName!,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.normal, fontSize: 19),
+                      ),
+                      const SizedBox(height: 15),
+                      const Text(
+                        "Explicit",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 14),
+                      ),
+                      Text(
+                        songDetails!.explicit! == "1" ? "True" : "False",
+                        style: const TextStyle(
+                            fontWeight: FontWeight.normal, fontSize: 16),
+                      ),
+                      const SizedBox(height: 15),
+                      const Text(
+                        "Rating",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 14),
+                      ),
+                      Text(
+                        songDetails!.rating!,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.normal, fontSize: 16),
+                      ),
+                      const SizedBox(height: 15),
+                      const Text(
+                        "Lyrics",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 14),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        "${_lyrics['lyrics_body']}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w300,
+                          fontSize: 15,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                      const Divider(thickness: 2),
+                      Text(
+                        "${_lyrics['lyrics_copyright']}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w300,
+                          fontSize: 10,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ]),
               ),
             ),
     );

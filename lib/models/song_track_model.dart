@@ -1,10 +1,12 @@
 class SongTrackModel {
   final int trackId;
 
-  final String name;
-  final String artist;
-  final String albumName;
-  final String trackname;
+  final String? name;
+  final String? artist;
+  final String? albumName;
+  final String? trackname;
+  final String? explicit;
+  final String? rating;
 
   SongTrackModel({
     required this.trackId,
@@ -12,6 +14,8 @@ class SongTrackModel {
     required this.artist,
     required this.albumName,
     required this.trackname,
+    required this.explicit,
+    required this.rating,
   });
 }
 

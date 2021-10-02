@@ -16,6 +16,7 @@ class LyricsTrackListScreen extends StatefulWidget {
 class _LyricsTrackListScreenState extends State<LyricsTrackListScreen> {
   var _isInit = true;
   var _isLoading = false;
+  var _isEmpty = false;
   @override
   void didChangeDependencies() async {
     // TODO: implement didChangeDependencies
@@ -26,11 +27,13 @@ class _LyricsTrackListScreenState extends State<LyricsTrackListScreen> {
       });
       await Provider.of<LyricsDataProvider>(context, listen: false)
           .fetchAndSetSongsChart()
-          .then((value) {
-        setState(() {
-          _isLoading = false;
-        });
-      });
+          .then(
+        (value) {
+          setState(() {
+            _isLoading = false;
+          });
+        },
+      );
     }
     _isInit = false;
 
@@ -40,6 +43,15 @@ class _LyricsTrackListScreenState extends State<LyricsTrackListScreen> {
   @override
   Widget build(BuildContext context) {
     final songList = Provider.of<LyricsDataProvider>(context).songscard;
+    if (songList.isEmpty) {
+      setState(() {
+        _isEmpty = true;
+      });
+    } else {
+      setState(() {
+        _isEmpty = false;
+      });
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -51,76 +63,83 @@ class _LyricsTrackListScreenState extends State<LyricsTrackListScreen> {
                 color: Colors.blue,
               ),
             )
-          : ListView.builder(
-              itemCount: songList.length,
-              itemBuilder: (ctx, i) => Card(
-                elevation: 4,
-                child: InkWell(
-                  onTap: () {
-                    // print("Card tapped");
-                    Navigator.of(context).pushNamed(SongDetailsScreen.routeName,
-                        arguments: songList[i]);
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.library_music,
-                        size: 30,
-                      ),
-                      const SizedBox(width: 19),
-                      Container(
-                        // color: Colors.amber,
-                        alignment: Alignment.centerLeft,
-                        width: 180,
-                        height: 80,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              songList[i].trackname,
-                              style: const TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              songList[i].albumName,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w300,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        flex: 5,
-                        child: Container(
-                          width: double.infinity,
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.center,
-                        // color: Colors.red,
-                        width: 100,
-                        height: 80,
-                        child: Text(
-                          songList[i].artist,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
+          : _isEmpty
+              ? const Center(child: Text("No data found"))
+              : ListView.builder(
+                  itemCount: songList.length,
+                  itemBuilder: (ctx, i) => Card(
+                    elevation: 4,
+                    child: InkWell(
+                      onTap: () {
+                        // print("Card tapped");
+                        Navigator.of(context).pushNamed(
+                            SongDetailsScreen.routeName,
+                            arguments: songList[i]);
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.library_music,
+                            size: 25,
                           ),
-                        ),
-                      )
-                    ],
+                          const SizedBox(width: 19),
+                          Container(
+                            // color: Colors.amber,
+                            alignment: Alignment.centerLeft,
+                            width: 220,
+                            height: 80,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    songList[i].trackname!,
+                                    style: const TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    songList[i].albumName!,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w300,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 5,
+                            child: Container(
+                              width: double.infinity,
+                            ),
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            // color: Colors.red,
+                            width: 100,
+                            height: 80,
+                            child: Text(
+                              songList[i].artist!,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
     );
   }
 }
