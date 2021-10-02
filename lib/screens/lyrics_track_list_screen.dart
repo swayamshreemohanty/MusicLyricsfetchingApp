@@ -67,7 +67,7 @@ class _LyricsTrackListScreenState extends State<LyricsTrackListScreen> {
               : ListView.builder(
                   itemCount: songList.length,
                   itemBuilder: (ctx, i) => Card(
-                    elevation: 4,
+                    elevation: 2,
                     child: InkWell(
                       onTap: () {
                         // print("Card tapped");
