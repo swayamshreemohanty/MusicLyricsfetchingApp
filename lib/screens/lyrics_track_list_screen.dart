@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
 import 'package:song_lyrics/provider/lyrics_provider.dart';
-import 'package:song_lyrics/widgets/drawer.dart';
-
+import 'package:song_lyrics/screens/favorites_song_list.dart';
 import 'package:song_lyrics/widgets/song_card_widget.dart';
 
 class LyricsTrackListScreen extends StatefulWidget {
@@ -58,11 +56,33 @@ class _LyricsTrackListScreenState extends State<LyricsTrackListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Center(child: Text("Trending")),
+        title: const Text("Trending"),
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.black,
+        actions: [
+          DropdownButton(
+            underline: Container(),
+            icon: const Icon(Icons.more_vert),
+            items: [
+              DropdownMenuItem(
+                child: Row(
+                  children: const [
+                    Icon(Icons.favorite),
+                    SizedBox(width: 8),
+                    Text("Favorite"),
+                  ],
+                ),
+                value: 'favorite',
+              )
+            ],
+            onChanged: (key) {
+              if (key == 'favorite') {
+                Navigator.of(context).pushNamed(FavoriteSongsList.routeName);
+              }
+            },
+          )
+        ],
       ),
-      drawer: MainDrawer(),
       body: _isLoading
           ? const Center(
               child: CircularProgressIndicator(
