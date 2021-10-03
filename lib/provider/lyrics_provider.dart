@@ -8,40 +8,30 @@ import 'package:http/http.dart' as http;
 
 class LyricsDataProvider with ChangeNotifier {
   List<SongTrackModel> _songscard = [];
+  List<SongTrackModel> _favoritesongscard = [];
 
   List<SongTrackModel> get songscard {
     return [..._songscard];
+  }
+
+  List<SongTrackModel> get favoritesongscard {
+    return [..._favoritesongscard];
   }
 
   var emptyLyrics = true;
 
   final String apiKey = "f253441f9bb90fde34eb5c53da5bdbf0";
 
-  Future<dynamic> fetchAndSetTrackdetails(int trackId) async {
-    // print("provider Track ID");
-    // print(trackId);
-    var url = Uri.parse(
-        "https://api.musixmatch.com/ws/1.1/track.get?track_id=$trackId&apikey=$apiKey");
-
-    try {
-      print("Fetching Data........");
-      final response = await http.get(url);
-      var extractedTrackData =
-          json.decode(response.body)['message']['body']['track'];
-
-      // final List<SongTrackModel> loadedTracks = []; //empty temporary list
-      print("Extracted track Data");
-      print(extractedTrackData);
-      if (extractedTrackData.isEmpty) {
-        return emptyLyrics = true;
-      } else {
-        emptyLyrics = false;
-        notifyListeners();
-        return extractedTrackData;
-      }
-    } catch (error) {
-      // print("Lyrics fetching Error");
-      return emptyLyrics = true;
+  Future<void> toggleFavorite(bool isFavorite, dynamic trackId) async {
+    final existingIndex =
+        _favoritesongscard.indexWhere((element) => element.trackId == trackId);
+    if (isFavorite) {
+      _favoritesongscard
+          .add(_songscard.firstWhere((element) => element.trackId == trackId));
+      notifyListeners();
+    } else {
+      _favoritesongscard.removeAt(existingIndex);
+      notifyListeners();
     }
   }
 
@@ -136,8 +126,8 @@ class ConnectivityProvider with ChangeNotifier {
         }
       },
     );
-    print("Internet Status");
-    print(_isOnline);
+    // print("Internet Status");
+    // print(_isOnline);
   }
 
   Future<bool> _updateConnectionStatus() async {

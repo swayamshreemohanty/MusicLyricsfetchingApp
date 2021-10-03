@@ -20,6 +20,7 @@ class _SongDetailsScreenState extends State<SongDetailsScreen> {
   dynamic trackId;
   var _emptyList = false;
   SongTrackModel? songDetails;
+  SongTrackModel? favoritesongList;
   var _isFavorite = false;
 
   @override
@@ -35,6 +36,20 @@ class _SongDetailsScreenState extends State<SongDetailsScreen> {
       songDetails = Provider.of<LyricsDataProvider>(context, listen: false)
           .songscard
           .firstWhere((element) => element.trackId == trackId);
+
+      final isfavorite = Provider.of<LyricsDataProvider>(context, listen: false)
+          .favoritesongscard
+          .indexWhere((element) => element.trackId == trackId);
+      if (isfavorite == -1) {
+        setState(() {
+          _isFavorite = false;
+        });
+      } else {
+        setState(() {
+          _isFavorite = true;
+        });
+      }
+
       await Provider.of<LyricsDataProvider>(context, listen: false)
           .fetchAndSetSongsLyrics(trackId)
           .then((value) {
@@ -167,6 +182,18 @@ class _SongDetailsScreenState extends State<SongDetailsScreen> {
           } else {
             return NoInternetScreen();
           }
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: _isFavorite
+            ? const Icon(Icons.star)
+            : const Icon(Icons.star_border_outlined),
+        onPressed: () {
+          setState(() {
+            _isFavorite = !_isFavorite;
+          });
+          Provider.of<LyricsDataProvider>(context, listen: false)
+              .toggleFavorite(_isFavorite, songDetails!.trackId);
         },
       ),
     );

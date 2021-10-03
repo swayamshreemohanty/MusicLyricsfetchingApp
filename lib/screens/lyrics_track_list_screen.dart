@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 import 'package:song_lyrics/provider/lyrics_provider.dart';
+import 'package:song_lyrics/widgets/drawer.dart';
 
 import 'package:song_lyrics/widgets/song_card_widget.dart';
 
@@ -26,7 +27,7 @@ class _LyricsTrackListScreenState extends State<LyricsTrackListScreen> {
       setState(() {
         _isLoading = true;
       });
-   
+
       await Provider.of<LyricsDataProvider>(context, listen: false)
           .fetchAndSetSongsChart()
           .then(
@@ -61,6 +62,7 @@ class _LyricsTrackListScreenState extends State<LyricsTrackListScreen> {
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.black,
       ),
+      drawer: MainDrawer(),
       body: _isLoading
           ? const Center(
               child: CircularProgressIndicator(
