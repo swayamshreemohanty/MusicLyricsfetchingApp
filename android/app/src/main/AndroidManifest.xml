@@ -2,7 +2,7 @@
     package="com.example.song_lyrics">
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="song_lyrics"
+        android:label="Song lyrics"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
