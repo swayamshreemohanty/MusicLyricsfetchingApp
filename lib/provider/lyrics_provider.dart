@@ -17,6 +17,34 @@ class LyricsDataProvider with ChangeNotifier {
 
   final String apiKey = "f253441f9bb90fde34eb5c53da5bdbf0";
 
+  Future<dynamic> fetchAndSetTrackdetails(int trackId) async {
+    // print("provider Track ID");
+    // print(trackId);
+    var url = Uri.parse(
+        "https://api.musixmatch.com/ws/1.1/track.get?track_id=$trackId&apikey=$apiKey");
+
+    try {
+      print("Fetching Data........");
+      final response = await http.get(url);
+      var extractedTrackData =
+          json.decode(response.body)['message']['body']['track'];
+
+      // final List<SongTrackModel> loadedTracks = []; //empty temporary list
+      print("Extracted track Data");
+      print(extractedTrackData);
+      if (extractedTrackData.isEmpty) {
+        return emptyLyrics = true;
+      } else {
+        emptyLyrics = false;
+        notifyListeners();
+        return extractedTrackData;
+      }
+    } catch (error) {
+      // print("Lyrics fetching Error");
+      return emptyLyrics = true;
+    }
+  }
+
   Future<dynamic> fetchAndSetSongsLyrics(int trackId) async {
     // print("provider Track ID");
     // print(trackId);
@@ -39,7 +67,6 @@ class LyricsDataProvider with ChangeNotifier {
         return extractedLyricsData;
       }
       // print("Extracted Lyrics Data");
-      // print(extractedLyricsData);
 
     } catch (error) {
       // print("Lyrics fetching Error");
@@ -58,6 +85,7 @@ class LyricsDataProvider with ChangeNotifier {
       var extractedData =
           await json.decode(response.body)['message']['body']['track_list'];
       final List<SongTrackModel> loadedTracks = []; //empty temporary list
+      // print(extractedData);
 
       if (extractedData.isEmpty) {
         _songscard.clear();

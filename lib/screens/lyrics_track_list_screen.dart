@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
+
 import 'package:provider/provider.dart';
 import 'package:song_lyrics/provider/lyrics_provider.dart';
-import 'package:song_lyrics/screens/song_details_screen.dart';
+
+import 'package:song_lyrics/widgets/song_card_widget.dart';
 
 class LyricsTrackListScreen extends StatefulWidget {
   const LyricsTrackListScreen({Key? key}) : super(key: key);
@@ -18,8 +19,6 @@ class _LyricsTrackListScreenState extends State<LyricsTrackListScreen> {
   var _isLoading = false;
   var _isEmpty = false;
 
- 
-
   @override
   void didChangeDependencies() async {
     Provider.of<ConnectivityProvider>(context, listen: false).startMonitoring();
@@ -27,7 +26,7 @@ class _LyricsTrackListScreenState extends State<LyricsTrackListScreen> {
       setState(() {
         _isLoading = true;
       });
-
+   
       await Provider.of<LyricsDataProvider>(context, listen: false)
           .fetchAndSetSongsChart()
           .then(
@@ -72,79 +71,17 @@ class _LyricsTrackListScreenState extends State<LyricsTrackListScreen> {
               ? const Center(child: Text("No data found"))
               : ListView.builder(
                   itemCount: songList.length,
-                  itemBuilder: (ctx, i) => Card(
-                    elevation: 2,
-                    child: InkWell(
-                      onTap: () {
-                        // print("Card tapped");
-                        Navigator.of(context).pushNamed(
-                            SongDetailsScreen.routeName,
-                            arguments: songList[i]);
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.library_music,
-                            size: 25,
-                            color: Colors.red,
-                          ),
-                          const SizedBox(width: 19),
-                          Container(
-                            // color: Colors.amber,
-                            alignment: Alignment.centerLeft,
-                            width: 220,
-                            height: 80,
-                            child: SingleChildScrollView(
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    songList[i].trackname!,
-                                    style: const TextStyle(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    songList[i].albumName!,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w300,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 5,
-                            child: Container(
-                              width: double.infinity,
-                            ),
-                          ),
-                          Container(
-                            alignment: Alignment.center,
-                            // color: Colors.red,
-                            width: 100,
-                            height: 80,
-                            child: Text(
-                              songList[i].artist!,
-                              style: const TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
+                  itemBuilder: (ctx, i) {
+                    return SongTrackCard(
+                      trackId: songList[i].trackId,
+                      name: songList[i].name,
+                      artist: songList[i].artist,
+                      albumName: songList[i].albumName,
+                      trackname: songList[i].trackname,
+                      explicit: songList[i].explicit,
+                      rating: songList[i].rating,
+                    );
+                  },
                 ),
     );
   }

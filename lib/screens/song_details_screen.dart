@@ -20,19 +20,23 @@ class _SongDetailsScreenState extends State<SongDetailsScreen> {
   dynamic trackId;
   var _emptyList = false;
   SongTrackModel? songDetails;
+  var _isFavorite = false;
 
   @override
   void didChangeDependencies() async {
     Provider.of<ConnectivityProvider>(context, listen: false).startMonitoring();
-    trackId = ModalRoute.of(context)!.settings.arguments as SongTrackModel;
-    songDetails = trackId;
+    trackId = ModalRoute.of(context)!.settings.arguments;
+    // songDetails = trackId;
 
     if (_isInit) {
       setState(() {
         _isLoading = true;
       });
+      songDetails = Provider.of<LyricsDataProvider>(context, listen: false)
+          .songscard
+          .firstWhere((element) => element.trackId == trackId);
       await Provider.of<LyricsDataProvider>(context, listen: false)
-          .fetchAndSetSongsLyrics(songDetails!.trackId)
+          .fetchAndSetSongsLyrics(trackId)
           .then((value) {
         if (value == true) {
           setState(() {
