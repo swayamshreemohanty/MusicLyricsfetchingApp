@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:song_lyrics/provider/lyrics_provider.dart';
-import 'package:song_lyrics/screens/favorites_song_list.dart';
+import 'package:song_lyrics/provider/central_provider.dart';
+import 'package:song_lyrics/screens/bookmaked_song_list.dart';
 import 'package:song_lyrics/widgets/song_card_widget.dart';
 
 class LyricsTrackListScreen extends StatefulWidget {
@@ -67,17 +67,17 @@ class _LyricsTrackListScreenState extends State<LyricsTrackListScreen> {
               DropdownMenuItem(
                 child: Row(
                   children: const [
-                    Icon(Icons.favorite),
+                    Icon(Icons.bookmark),
                     SizedBox(width: 8),
-                    Text("Favorite"),
+                    Text("Bookmarks"),
                   ],
                 ),
-                value: 'favorite',
+                value: 'bookmarks',
               )
             ],
             onChanged: (key) {
-              if (key == 'favorite') {
-                Navigator.of(context).pushNamed(FavoriteSongsList.routeName);
+              if (key == 'bookmarks') {
+                Navigator.of(context).pushNamed(BookmarkedSongsList.routeName);
               }
             },
           )

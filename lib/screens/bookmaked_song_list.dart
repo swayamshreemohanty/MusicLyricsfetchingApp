@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:song_lyrics/provider/lyrics_provider.dart';
+import 'package:song_lyrics/provider/central_provider.dart';
 import 'package:song_lyrics/screens/no_internet_screen.dart';
 import 'package:song_lyrics/widgets/song_card_widget.dart';
 
-class FavoriteSongsList extends StatefulWidget {
+// ignore: use_key_in_widget_constructors
+class BookmarkedSongsList extends StatefulWidget {
   static const routeName = '/favorite_list';
 
   @override
-  State<FavoriteSongsList> createState() => _FavoriteSongsListState();
+  State<BookmarkedSongsList> createState() => _BookmarkedSongsListState();
 }
 
-class _FavoriteSongsListState extends State<FavoriteSongsList> {
+class _BookmarkedSongsListState extends State<BookmarkedSongsList> {
   var _isEmpty = false;
 
   @override
@@ -23,9 +24,9 @@ class _FavoriteSongsListState extends State<FavoriteSongsList> {
 
   @override
   Widget build(BuildContext context) {
-    final favoritesongList =
-        Provider.of<LyricsDataProvider>(context).favoritesongscard;
-    if (favoritesongList.isEmpty) {
+    final bookmarkedsongList =
+        Provider.of<LyricsDataProvider>(context).bookmarkedsongscard;
+    if (bookmarkedsongList.isEmpty) {
       setState(() {
         _isEmpty = true;
       });
@@ -37,7 +38,7 @@ class _FavoriteSongsListState extends State<FavoriteSongsList> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Favorites"),
+        title: const Text("Bookmarks"),
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.black,
       ),
@@ -45,18 +46,18 @@ class _FavoriteSongsListState extends State<FavoriteSongsList> {
         builder: (ctx, model, _) {
           if (model.isOnline) {
             return _isEmpty
-                ? const Center(child: Text("No favorite song found"))
+                ? const Center(child: Text("No book marked song found"))
                 : ListView.builder(
-                    itemCount: favoritesongList.length,
+                    itemCount: bookmarkedsongList.length,
                     itemBuilder: (ctx, i) {
                       return SongTrackCard(
-                        trackId: favoritesongList[i].trackId,
-                        name: favoritesongList[i].name,
-                        artist: favoritesongList[i].artist,
-                        albumName: favoritesongList[i].albumName,
-                        trackname: favoritesongList[i].trackname,
-                        explicit: favoritesongList[i].explicit,
-                        rating: favoritesongList[i].rating,
+                        trackId: bookmarkedsongList[i].trackId,
+                        name: bookmarkedsongList[i].name,
+                        artist: bookmarkedsongList[i].artist,
+                        albumName: bookmarkedsongList[i].albumName,
+                        trackname: bookmarkedsongList[i].trackname,
+                        explicit: bookmarkedsongList[i].explicit,
+                        rating: bookmarkedsongList[i].rating,
                       );
                     },
                   );

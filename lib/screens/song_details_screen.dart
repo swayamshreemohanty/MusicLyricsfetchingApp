@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:song_lyrics/models/song_track_model.dart';
-import 'package:song_lyrics/provider/lyrics_provider.dart';
+import 'package:song_lyrics/provider/central_provider.dart';
 import 'package:song_lyrics/screens/no_internet_screen.dart';
 
 // ignore: use_key_in_widget_constructors
@@ -20,7 +20,7 @@ class _SongDetailsScreenState extends State<SongDetailsScreen> {
   dynamic trackId;
   var _emptyList = false;
   SongTrackModel? songDetails;
-  SongTrackModel? favoritesongList;
+
   var _isFavorite = false;
 
   @override
@@ -38,7 +38,7 @@ class _SongDetailsScreenState extends State<SongDetailsScreen> {
           .firstWhere((element) => element.trackId == trackId);
 
       final isfavorite = Provider.of<LyricsDataProvider>(context, listen: false)
-          .favoritesongscard
+          .bookmarkedsongscard
           .indexWhere((element) => element.trackId == trackId);
       if (isfavorite == -1) {
         setState(() {
@@ -186,14 +186,14 @@ class _SongDetailsScreenState extends State<SongDetailsScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         child: _isFavorite
-            ? const Icon(Icons.star)
-            : const Icon(Icons.star_border_outlined),
+            ? const Icon(Icons.bookmark_add)
+            : const Icon(Icons.bookmark_add_outlined),
         onPressed: () {
           setState(() {
             _isFavorite = !_isFavorite;
           });
           Provider.of<LyricsDataProvider>(context, listen: false)
-              .toggleFavorite(_isFavorite, songDetails!.trackId);
+              .toggleBookmark(_isFavorite, songDetails!.trackId);
         },
       ),
     );

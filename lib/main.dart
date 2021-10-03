@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:song_lyrics/provider/lyrics_provider.dart';
-import 'package:song_lyrics/screens/favorites_song_list.dart';
-import 'package:song_lyrics/screens/lyrics_track_list_screen.dart';
+import 'package:song_lyrics/provider/central_provider.dart';
+import 'package:song_lyrics/screens/bookmaked_song_list.dart';
+import 'package:song_lyrics/screens/track_list_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:song_lyrics/screens/no_internet_screen.dart';
 import 'package:song_lyrics/screens/song_details_screen.dart';
@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
             LyricsTrackListScreen.routeName: (ctx) =>
                 const LyricsTrackListScreen(),
             SongDetailsScreen.routeName: (ctx) => SongDetailsScreen(),
-            FavoriteSongsList.routeName: (ctx) => FavoriteSongsList(),
+            BookmarkedSongsList.routeName: (ctx) => BookmarkedSongsList(),
           },
         );
       }),

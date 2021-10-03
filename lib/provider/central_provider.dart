@@ -8,29 +8,29 @@ import 'package:http/http.dart' as http;
 
 class LyricsDataProvider with ChangeNotifier {
   List<SongTrackModel> _songscard = [];
-  List<SongTrackModel> _favoritesongscard = [];
+  final List<SongTrackModel> _bookmarkedsongscard = [];
 
   List<SongTrackModel> get songscard {
     return [..._songscard];
   }
 
-  List<SongTrackModel> get favoritesongscard {
-    return [..._favoritesongscard];
+  List<SongTrackModel> get bookmarkedsongscard {
+    return [..._bookmarkedsongscard];
   }
 
   var emptyLyrics = true;
 
   final String apiKey = "f253441f9bb90fde34eb5c53da5bdbf0";
 
-  Future<void> toggleFavorite(bool isFavorite, dynamic trackId) async {
+  Future<void> toggleBookmark(bool isFavorite, dynamic trackId) async {
     final existingIndex =
-        _favoritesongscard.indexWhere((element) => element.trackId == trackId);
+        _bookmarkedsongscard.indexWhere((element) => element.trackId == trackId);
     if (isFavorite) {
-      _favoritesongscard
+      _bookmarkedsongscard
           .add(_songscard.firstWhere((element) => element.trackId == trackId));
       notifyListeners();
     } else {
-      _favoritesongscard.removeAt(existingIndex);
+      _bookmarkedsongscard.removeAt(existingIndex);
       notifyListeners();
     }
   }
