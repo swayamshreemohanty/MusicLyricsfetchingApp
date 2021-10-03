@@ -7,6 +7,7 @@ import 'package:song_lyrics/screens/song_details_screen.dart';
 
 class LyricsTrackListScreen extends StatefulWidget {
   const LyricsTrackListScreen({Key? key}) : super(key: key);
+  static const routeName = '/trackList';
 
   @override
   State<LyricsTrackListScreen> createState() => _LyricsTrackListScreenState();
@@ -16,12 +17,17 @@ class _LyricsTrackListScreenState extends State<LyricsTrackListScreen> {
   var _isInit = true;
   var _isLoading = false;
   var _isEmpty = false;
+
+ 
+
   @override
   void didChangeDependencies() async {
+    Provider.of<ConnectivityProvider>(context, listen: false).startMonitoring();
     if (_isInit) {
       setState(() {
         _isLoading = true;
       });
+
       await Provider.of<LyricsDataProvider>(context, listen: false)
           .fetchAndSetSongsChart()
           .then(

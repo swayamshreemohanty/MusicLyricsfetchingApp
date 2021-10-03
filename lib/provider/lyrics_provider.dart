@@ -1,6 +1,8 @@
 import 'dart:convert';
-
+import 'dart:io';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:song_lyrics/models/song_track_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -11,7 +13,10 @@ class LyricsDataProvider with ChangeNotifier {
     return [..._songscard];
   }
 
+  var emptyLyrics = true;
+
   final String apiKey = "f253441f9bb90fde34eb5c53da5bdbf0";
+
   Future<dynamic> fetchAndSetSongsLyrics(int trackId) async {
     // print("provider Track ID");
     // print(trackId);
@@ -19,23 +24,26 @@ class LyricsDataProvider with ChangeNotifier {
         "https://api.musixmatch.com/ws/1.1/track.lyrics.get?track_id=$trackId&apikey=$apiKey");
 
     try {
-      print("Fetching Data........");
+      // print("Fetching Data........");
       final response = await http.get(url);
       var extractedLyricsData =
           json.decode(response.body)['message']['body']['lyrics'];
-      ;
+
       // final List<SongTrackModel> loadedTracks = []; //empty temporary list
 
       if (extractedLyricsData.isEmpty) {
-        _songscard.clear();
-        return "0";
+        return emptyLyrics = true;
+      } else {
+        emptyLyrics = false;
+        notifyListeners();
+        return extractedLyricsData;
       }
       // print("Extracted Lyrics Data");
       // print(extractedLyricsData);
-      notifyListeners();
-      return extractedLyricsData;
+
     } catch (error) {
       // print("Lyrics fetching Error");
+      return emptyLyrics = true;
     }
   }
 
@@ -73,9 +81,65 @@ class LyricsDataProvider with ChangeNotifier {
       }
       _songscard = loadedTracks;
     } catch (error) {
-      print("Chart fetching Error");
+      // print("Chart fetching Error");
       _songscard = [];
     }
     notifyListeners();
+  }
+}
+
+class ConnectivityProvider with ChangeNotifier {
+  final Connectivity _connectivity = Connectivity();
+  bool _isOnline = true;
+  bool get isOnline => _isOnline;
+
+  startMonitoring() async {
+    await initConenctivity();
+    _connectivity.onConnectivityChanged.listen(
+      (event) async {
+        if (event == ConnectivityResult.none) {
+          _isOnline = false;
+          notifyListeners();
+        } else {
+          await _updateConnectionStatus().then((bool isConnected) {
+            _isOnline = isConnected;
+            notifyListeners();
+          });
+        }
+      },
+    );
+    print("Internet Status");
+    print(_isOnline);
+  }
+
+  Future<bool> _updateConnectionStatus() async {
+    bool isConnected = true;
+
+    try {
+      final List<InternetAddress> result =
+          await InternetAddress.lookup('google.com');
+
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        isConnected = true;
+      }
+    } on SocketException catch (_) {
+      isConnected = false;
+    }
+    return isConnected;
+  }
+
+  Future<void> initConenctivity() async {
+    try {
+      var status = await _connectivity.checkConnectivity();
+      if (status == ConnectivityResult.none) {
+        _isOnline = false;
+        notifyListeners();
+      } else {
+        _isOnline = true;
+        notifyListeners();
+      }
+    } on PlatformException catch (e) {
+      print("PlatformException: ${e.toString()}");
+    }
   }
 }
