@@ -62,6 +62,7 @@ class _LyricsTrackListScreenState extends State<LyricsTrackListScreen> {
         actions: [
           DropdownButton(
             underline: Container(),
+            iconEnabledColor: Colors.black,
             icon: const Icon(Icons.more_vert),
             items: [
               DropdownMenuItem(
